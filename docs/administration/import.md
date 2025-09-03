@@ -4,7 +4,7 @@
 
 If you are using Gramps Desktop, there are two steps to prepare your database to make sure everything will run smoothly in the following. If you are migrating from a different genealogy program, you can skip this step.
 
-1. Check and repair the database
+1. <a name="1.1"></a>Check and repair the database
     - Optional: create a database backup by exporting to Gramps XML
     - Run the [Check and repair database tool](https://gramps-project.org/wiki/index.php/Gramps_5.2_Wiki_Manual_-_Tools#Check_and_Repair_Database). This fixes some internal inconsistencies that could lead to problems in Gramps Web.
 2. Convert media paths to relative
@@ -24,10 +24,38 @@ To import the media files belonging to an imported `.gramps` file, see the next 
 
 ## Import media files
 
-If you have uploaded a family tree and need to upload the corresponding media files, you can use the "import media archive" button on the "Import" page.
+If you have uploaded a family tree and need to upload the corresponding media files, you can use the **Import Media Files** button on the **Administration** page.
 
-It expects a ZIP file with the missing media files inside. The folder structure in the ZIP file does not have to be the same as the folder structure inside the Gramps media folder as the files are matched to media objects by their checksum.
+The import expects a ZIP file with the missing media files inside.
 
-Note that this feature only works for files that have the correct checksum in the Gramps database (which should be ensured by running the check and repair tool in the first step).
+The folder structure in the ZIP file does not have to be the same as the folder structure inside the Gramps media folder as the files are matched to media objects by their checksum.
+
+The import criteria matches for files in the ZIP:
+
+  a) that have a checksum that agrees with the checksums of the media objects in the database, or
+
+  b) where the path relative to the ZIP root agrees with the media object path which must be relative.
+
+!!! Note 
+    The **Import Media Files** feature only works for files that have the correct checksum in the Gramps database (which should be ensured by running the check and repair tool in the [first step](#1.1)).
 
 When moving to Gramps Web from a different genealogy program including media files, it is recommended to first import everything into Gramps Desktop, which has more options to associate existing media files with an imported tree.
+
+### Possible Issues
+
+#### Media objects without checksum
+
+Media Objects without a checksum will be displayed on the **Administration** page. 
+For support in this case, refer to [Get Help](https://www.grampsweb.org/help/help/)
+
+#### Media objects with an absolute path
+
+Gramps Web requires a relative path for any imported Media Objects in order to match Media Objects across platforms.
+[comment]: <> (never work with Gramps Web - see docs)
+
+[comment]: <> (#### Media Objects with Windows path separators)
+[comment]: <> (I honestly don't know off the top of my head if this will work)
+
+#### ZIP file with an unexpected structure and Media Objects with missing checksums
+
+Files with a different checksum than the corresponding Media Object, and in a different file structure will fail to import.
