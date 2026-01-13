@@ -16,17 +16,27 @@ You can use Linux, macOS, or Windows as your operating system.
 
 ## Getting started
 
-1. Open the [Gramps Web API repository](https://github.com/gramps-project/gramps-web-api) and click "fork"
+1. Open the [Gramps Web API repository](https://github.com/gramps-project/gramps-web-api) and click "Fork"
 2. Clone your forked repository to your local machine using Git
-3. Open the cloned repository in Visual Studio Code. When prompted, select "Reopen in Container" or manually open the command palette (Ctrl+Shift+P or Cmd+Shift+P) and select "Dev Containers: Rebuild and Reopen in Container".
-4. Wait for the dev container to build and start. This may take a few minutes, especially the first time.
+3. Open the cloned repository in Visual Studio Code. When prompted, select "Reopen in Container" or manually open the Command Palette (CTRL+SHIFT+P or Cmd+Shift+P) and select "Dev Containers: Rebuild and Reopen in Container".
+4. Wait for the Dev Container to build and start. This may take a few minutes, especially the first time.
 
+    **After the Dev Container build is successful, the command will return:**
 
+    `Successfully installed gramps-webapi-x.x.x.`
+
+    !!! info
+        To Rebuild Container In Visual Studio Code:
+
+        - If in the container, use the "Rebuild in container" palette command.
+
+        - If in the folder view (i.e. not in the container) use the "Rebuild and Reopen in Container" palette command.
+ 
 ## Tasks
 
 If you are only modifying the backend code, you do not necessarily need to spin up a web server - unit tests use a Flask test client that allow simulating requests to the API without needing a running server.
 
-However, running a server is useful if you
+However, running a server is useful if you:
 
 - want to try out your changes with real HTTP requests (see [manual queries](queries.md)), 
 - want to preview the impact of changes on the full Gramps Web application, or
