@@ -51,10 +51,6 @@ For support in this case, refer to [Get Help](https://www.grampsweb.org/help/hel
 #### Media objects with an absolute path
 
 Gramps Web requires a relative path for any imported Media Objects in order to match Media Objects across platforms.
-[comment]: <> (never work with Gramps Web - see docs)
-
-[comment]: <> (#### Media Objects with Windows path separators)
-[comment]: <> (I honestly don't know off the top of my head if this will work)
 
 #### ZIP file with an unexpected structure and Media Objects with missing checksums
 
