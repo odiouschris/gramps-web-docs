@@ -1,13 +1,13 @@
 # Configuration du serveur
 
-En utilisant l'image Docker par défaut, toute la configuration nécessaire peut être effectuée depuis le navigateur. Cependant, selon le déploiement, il peut être nécessaire de personnaliser la configuration du serveur.
+En utilisant l'image Docker par défaut, toute la configuration nécessaire peut être effectuée depuis le navigateur. Cependant, en fonction du déploiement, il peut être nécessaire de personnaliser la configuration du serveur.
 
 Cette page répertorie toutes les méthodes pour modifier la configuration et toutes les options de configuration existantes.
 
 
 ## Fichier de configuration vs. variables d'environnement
 
-Pour les paramètres, vous pouvez utiliser soit un fichier de configuration, soit des variables d'environnement.
+Pour les paramètres, vous pouvez soit utiliser un fichier de configuration, soit des variables d'environnement.
 
 Lorsque vous utilisez la [configuration basée sur Docker Compose](deployment.md), vous pouvez inclure un fichier de configuration en ajoutant l'élément de liste suivant sous la clé `volumes:` dans le bloc `grampsweb:` :
 
@@ -31,8 +31,8 @@ Les options de configuration suivantes existent.
 Clé | Description
 ----|-------------
 `TREE` | Le nom de la base de données de l'arbre généalogique à utiliser. Affichez les arbres disponibles avec `gramps -l`. Si un arbre avec ce nom n'existe pas, un nouvel arbre vide sera créé.
-`SECRET_KEY` | La clé secrète pour flask. Le secret ne doit pas être partagé publiquement. Le changer invalidera tous les jetons d'accès.
-`USER_DB_URI` | L'URL de la base de données de l'utilisateur. Toute URL compatible avec SQLAlchemy est autorisée.
+`SECRET_KEY` | La clé secrète pour flask. Le secret ne doit pas être partagé publiquement. Le changement de celle-ci invalidera tous les jetons d'accès.
+`USER_DB_URI` | L'URL de la base de données des utilisateurs. Toute URL compatible avec SQLAlchemy est autorisée.
 
 !!! info
     Vous pouvez générer une clé secrète sécurisée par exemple avec la commande
@@ -46,26 +46,27 @@ Clé | Description
 Clé | Description
 ----|-------------
 `MEDIA_BASE_DIR` | Chemin à utiliser comme répertoire de base pour les fichiers multimédias, remplaçant le répertoire de base multimédia défini dans Gramps. Lors de l'utilisation de [S3](s3.md), doit avoir la forme `s3://<bucket_name>`
-`SEARCH_INDEX_DB_URI` | URL de la base de données pour l'index de recherche. Seuls `sqlite` ou `postgresql` sont autorisés comme backends. Par défaut, c'est `sqlite:///indexdir/search_index.db`, créant un fichier SQLite dans le dossier `indexdir` par rapport au chemin où le script est exécuté.
+`SEARCH_INDEX_DB_URI` | URL de la base de données pour l'index de recherche. Seules `sqlite` ou `postgresql` sont autorisées comme backends. Par défaut, cela vaut `sqlite:///indexdir/search_index.db`, créant un fichier SQLite dans le dossier `indexdir` par rapport au chemin où le script est exécuté
 `STATIC_PATH` | Chemin pour servir des fichiers statiques (par exemple, un frontend web statique)
-`BASE_URL` | URL de base où l'API peut être atteinte (par exemple, `https://mygramps.mydomain.com/`). Ceci est nécessaire par exemple pour construire des liens de réinitialisation de mot de passe corrects.
+`BASE_URL` | URL de base où l'API peut être atteinte (par exemple, `https://mygramps.mydomain.com/`). Ceci est nécessaire par exemple pour construire des liens de réinitialisation de mot de passe corrects
 `CORS_ORIGINS` | Origines d'où les requêtes CORS sont autorisées. Par défaut, toutes sont interdites. Utilisez `"*"` pour autoriser les requêtes de tout domaine.
 `EMAIL_HOST` | Hôte du serveur SMTP (par exemple, pour l'envoi d'e-mails de réinitialisation de mot de passe)
 `EMAIL_PORT` | Port du serveur SMTP. par défaut 465
 `EMAIL_HOST_USER` | Nom d'utilisateur du serveur SMTP
 `EMAIL_HOST_PASSWORD` | Mot de passe du serveur SMTP
-`EMAIL_USE_TLS` | **Obsolète** (utilisez `EMAIL_USE_SSL` ou `EMAIL_USE_STARTTLS` à la place). Booléen, indique s'il faut utiliser TLS pour l'envoi d'e-mails. Par défaut, c'est `True`. Lors de l'utilisation de STARTTLS, définissez ceci sur `False` et utilisez un port différent de 25.
-`EMAIL_USE_SSL` | Booléen, indique s'il faut utiliser SSL/TLS implicite pour SMTP (v3.6.0+). Par défaut, c'est `True` si `EMAIL_USE_TLS` n'est pas explicitement défini. Utilisé typiquement avec le port 465.
-`EMAIL_USE_STARTTLS` | Booléen, indique s'il faut utiliser STARTTLS explicite pour SMTP (v3.6.0+). Par défaut, c'est `False`. Utilisé typiquement avec le port 587 ou 25.
+`EMAIL_USE_TLS` | **Déprécié** (utilisez `EMAIL_USE_SSL` ou `EMAIL_USE_STARTTLS` à la place). Booléen, s'il faut utiliser TLS pour l'envoi d'e-mails. Par défaut, cela vaut `True`. Lors de l'utilisation de STARTTLS, définissez ceci sur `False` et utilisez un port différent de 25.
+`EMAIL_USE_SSL` | Booléen, s'il faut utiliser SSL/TLS implicite pour SMTP (v3.6.0+). Par défaut, cela vaut `True` si `EMAIL_USE_TLS` n'est pas explicitement défini. Utilisé typiquement avec le port 465.
+`EMAIL_USE_STARTTLS` | Booléen, s'il faut utiliser STARTTLS explicite pour SMTP (v3.6.0+). Par défaut, cela vaut `False`. Utilisé typiquement avec le port 587 ou 25.
 `DEFAULT_FROM_EMAIL` | Adresse "De" pour les e-mails automatisés
 `THUMBNAIL_CACHE_CONFIG` | Dictionnaire avec les paramètres pour le cache des vignettes. Voir [Flask-Caching](https://flask-caching.readthedocs.io/en/latest/) pour les paramètres possibles.
 `REQUEST_CACHE_CONFIG` | Dictionnaire avec les paramètres pour le cache des requêtes. Voir [Flask-Caching](https://flask-caching.readthedocs.io/en/latest/) pour les paramètres possibles.
 `PERSISTENT_CACHE_CONFIG` | Dictionnaire avec les paramètres pour le cache persistant, utilisé par exemple pour la télémétrie. Voir [Flask-Caching](https://flask-caching.readthedocs.io/en/latest/) pour les paramètres possibles.
-`CELERY_CONFIG` | Paramètres pour la file d'attente des tâches en arrière-plan Celery. Voir [Celery](https://docs.celeryq.dev/en/stable/userguide/configuration.html) pour les paramètres possibles.
+`CELERY_CONFIG` | Paramètres pour la file d'attente de tâches en arrière-plan Celery. Voir [Celery](https://docs.celeryq.dev/en/stable/userguide/configuration.html) pour les paramètres possibles.
 `REPORT_DIR` | Répertoire temporaire où la sortie des rapports Gramps sera stockée
 `EXPORT_DIR` | Répertoire temporaire où la sortie de l'exportation de la base de données Gramps sera stockée
 `REGISTRATION_DISABLED` | Si `True`, interdire l'enregistrement de nouveaux utilisateurs (par défaut `False`)
 `DISABLE_TELEMETRY` | Si `True`, désactiver la télémétrie des statistiques (par défaut `False`). Voir [télémétrie](telemetry.md) pour plus de détails.
+`PILLOW_MAX_IMAGE_PIXELS` | Définit le paramètre PIL.Image.MAX_IMAGE_PIXELS, qui indique le nombre de pixels que l'image traitée peut contenir. Voir [docs](https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.MAX_IMAGE_PIXELS) pour plus de détails.
 
 
 !!! info
@@ -89,10 +90,10 @@ Les paramètres suivants sont pertinents lors de [l'hébergement de plusieurs ar
 
 Clé | Description
 ----|-------------
-`MEDIA_PREFIX_TREE` | Booléen, indique s'il faut ou non utiliser un sous-dossier séparé pour les fichiers multimédias de chaque arbre. Par défaut, c'est `False`, mais il est fortement recommandé d'utiliser `True` dans une configuration multi-arbres.
-`NEW_DB_BACKEND` | Le backend de base de données à utiliser pour les arbres généalogiques nouvellement créés. Doit être l'un de `sqlite`, `postgresql`, ou `sharedpostgresql`. Par défaut, c'est `sqlite`.
-`POSTGRES_HOST` | Le nom d'hôte du serveur PostgreSQL utilisé pour créer de nouveaux arbres lors de l'utilisation d'une configuration multi-arbres avec le backend SharedPostgreSQL.
-`POSTGRES_PORT` | Le port du serveur PostgreSQL utilisé pour créer de nouveaux arbres lors de l'utilisation d'une configuration multi-arbres avec le backend SharedPostgreSQL.
+`MEDIA_PREFIX_TREE` | Booléen, s'il faut ou non utiliser un sous-dossier séparé pour les fichiers multimédias de chaque arbre. Par défaut, cela vaut `False`, mais il est fortement recommandé d'utiliser `True` dans une configuration multi-arbres
+`NEW_DB_BACKEND` | Le backend de base de données à utiliser pour les arbres généalogiques nouvellement créés. Doit être l'un de `sqlite`, `postgresql` ou `sharedpostgresql`. Par défaut, cela vaut `sqlite`.
+`POSTGRES_HOST` | Le nom d'hôte du serveur PostgreSQL utilisé pour créer de nouveaux arbres lors de l'utilisation d'une configuration multi-arbres avec le backend SharedPostgreSQL
+`POSTGRES_PORT` | Le port du serveur PostgreSQL utilisé pour créer de nouveaux arbres lors de l'utilisation d'une configuration multi-arbres avec le backend SharedPostgreSQL
 
 
 ### Paramètres pour l'authentification OIDC
@@ -101,16 +102,16 @@ Ces paramètres sont nécessaires si vous souhaitez utiliser l'authentification 
 
 Clé | Description
 ----|-------------
-`OIDC_ENABLED` | Booléen, indique s'il faut activer l'authentification OIDC. Par défaut, c'est `False`.
+`OIDC_ENABLED` | Booléen, s'il faut activer l'authentification OIDC. Par défaut, cela vaut `False`.
 `OIDC_ISSUER` | URL de l'émetteur du fournisseur OIDC (pour des fournisseurs OIDC personnalisés)
 `OIDC_CLIENT_ID` | ID client OAuth (pour des fournisseurs OIDC personnalisés)
 `OIDC_CLIENT_SECRET` | Secret client OAuth (pour des fournisseurs OIDC personnalisés)
-`OIDC_NAME` | Nom d'affichage personnalisé pour le fournisseur. Par défaut, c'est "OIDC"
-`OIDC_SCOPES` | Scopes OAuth. Par défaut, c'est "openid email profile"
-`OIDC_USERNAME_CLAIM` | La revendication à utiliser pour le nom d'utilisateur. Par défaut, c'est "preferred_username"
-`OIDC_OPENID_CONFIG_URL` | Optionnel : URL vers le point de configuration OpenID Connect (si vous n'utilisez pas le standard `/.well-known/openid-configuration`)
-`OIDC_DISABLE_LOCAL_AUTH` | Booléen, indique s'il faut désactiver l'authentification locale par nom d'utilisateur/mot de passe. Par défaut, c'est `False`
-`OIDC_AUTO_REDIRECT` | Booléen, indique s'il faut rediriger automatiquement vers OIDC lorsqu'un seul fournisseur est configuré. Par défaut, c'est `False`
+`OIDC_NAME` | Nom d'affichage personnalisé pour le fournisseur. Par défaut, cela vaut "OIDC"
+`OIDC_SCOPES` | Scopes OAuth. Par défaut, cela vaut "openid email profile"
+`OIDC_USERNAME_CLAIM` | La revendication à utiliser pour le nom d'utilisateur. Par défaut, cela vaut "preferred_username"
+`OIDC_OPENID_CONFIG_URL` | Optionnel : URL vers le point de terminaison de configuration OpenID Connect (si vous n'utilisez pas le standard `/.well-known/openid-configuration`)
+`OIDC_DISABLE_LOCAL_AUTH` | Booléen, s'il faut désactiver l'authentification locale par nom d'utilisateur/mot de passe. Par défaut, cela vaut `False`
+`OIDC_AUTO_REDIRECT` | Booléen, s'il faut rediriger automatiquement vers OIDC lorsqu'un seul fournisseur est configuré. Par défaut, cela vaut `False`
 
 #### Fournisseurs OIDC intégrés
 
@@ -131,7 +132,7 @@ Ces paramètres vous permettent de mapper les groupes/rôles OIDC de votre fourn
 
 Clé | Description
 ----|-------------
-`OIDC_ROLE_CLAIM` | Le nom de la revendication dans le jeton OIDC qui contient les groupes/rôles de l'utilisateur. Par défaut, c'est "groups"
+`OIDC_ROLE_CLAIM` | Le nom de la revendication dans le jeton OIDC qui contient les groupes/rôles de l'utilisateur. Par défaut, cela vaut "groups"
 `OIDC_GROUP_ADMIN` | Le nom du groupe/rôle de votre fournisseur OIDC qui correspond au rôle "Admin" de Gramps
 `OIDC_GROUP_OWNER` | Le nom du groupe/rôle de votre fournisseur OIDC qui correspond au rôle "Owner" de Gramps
 `OIDC_GROUP_EDITOR` | Le nom du groupe/rôle de votre fournisseur OIDC qui correspond au rôle "Editor" de Gramps
@@ -145,11 +146,11 @@ Ces paramètres sont nécessaires si vous souhaitez utiliser des fonctionnalité
 
 Clé | Description
 ----|-------------
-`LLM_BASE_URL` | URL de base pour l'API de chat compatible OpenAI. Par défaut, c'est `None`, ce qui utilise l'API OpenAI.
-`LLM_MODEL` | Le modèle à utiliser pour l'API de chat compatible OpenAI. Si non défini (par défaut), le chat est désactivé. À partir de v3.6.0, l'assistant IA utilise Pydantic AI avec des capacités d'appel d'outils.
+`LLM_BASE_URL` | URL de base pour l'API de chat compatible OpenAI. Par défaut, cela vaut `None`, ce qui utilise l'API OpenAI.
+`LLM_MODEL` | Le modèle à utiliser pour l'API de chat compatible OpenAI. Si non défini (par défaut), le chat est désactivé. À partir de la v3.6.0, l'assistant IA utilise Pydantic AI avec des capacités d'appel d'outils.
 `VECTOR_EMBEDDING_MODEL` | Le modèle [Sentence Transformers](https://sbert.net/) à utiliser pour les embeddings vectoriels de recherche sémantique. Si non défini (par défaut), la recherche sémantique et le chat sont désactivés.
-`LLM_MAX_CONTEXT_LENGTH` | Limite de caractères pour le contexte de l'arbre généalogique fourni au LLM. Par défaut, c'est 50000.
-`LLM_SYSTEM_PROMPT` | Invite système personnalisée pour l'assistant de chat LLM (v3.6.0+). Si non définie, utilise l'invite par défaut optimisée pour la généalogie.
+`LLM_MAX_CONTEXT_LENGTH` | Limite de caractères pour le contexte de l'arbre généalogique fourni à l'IA. Par défaut, cela vaut 50000.
+`LLM_SYSTEM_PROMPT` | Invite système personnalisée pour l'assistant de chat IA (v3.6.0+). Si non définie, utilise l'invite par défaut optimisée pour la généalogie.
 
 
 ## Exemple de fichier de configuration
