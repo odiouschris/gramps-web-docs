@@ -46,6 +46,7 @@ Key | Description
 Key | Description
 ----|-------------
 `MEDIA_BASE_DIR` | Path to use as base directory for media files, overriding the media base directory set in Gramps. When using [S3](s3.md), must have the form `s3://<bucket_name>`
+ `TREE_ID` | The directory name of the family tree database to use in single-tree mode (when `TREE` is not set to `MULTI`). When set, the server identifies the tree by its directory name rather than its display name, which is more robust to renames. Required if you want to rename the tree via the API. The directory name can be found via `GET /api/trees/-` (the `id` field).
 `SEARCH_INDEX_DB_URI` | Database URL for the search index. Only `sqlite` or `postgresql` are allowed as backends. Defaults to `sqlite:///indexdir/search_index.db`, creating an SQLite file in the folder `indexdir` relative to the path where the script is run
 `STATIC_PATH` | Path to serve static files from (e.g. a static web frontend)
 `BASE_URL` | Base URL where the API can be reached (e.g. `https://mygramps.mydomain.com/`). This is necessary e.g. to build correct password reset links
