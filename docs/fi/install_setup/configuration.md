@@ -1,22 +1,22 @@
 # Palvelimen konfigurointi
 
-Oletusarvoista Docker-kuvaa käyttäen kaikki tarvittava konfigurointi voidaan tehdä selaimesta. Kuitenkin, riippuen käyttöönotosta, voi olla tarpeen mukauttaa palvelimen konfigurointia.
+Oletus Docker-kuvaa käyttäen kaikki tarvittava konfigurointi voidaan tehdä selaimesta. Käytön mukaan voi kuitenkin olla tarpeen mukauttaa palvelimen konfigurointia.
 
-Tällä sivulla luetellaan kaikki menetelmät konfiguroinnin muuttamiseksi ja kaikki olemassa olevat konfigurointivaihtoehdot.
+Tällä sivulla luetellaan kaikki menetelmät konfiguroinnin muuttamiseen ja kaikki olemassa olevat konfigurointivaihtoehdot.
 
 
 ## Konfigurointitiedosto vs. ympäristömuuttujat
 
-Asetusten osalta voit käyttää joko konfigurointitiedostoa tai ympäristömuuttujia.
+Asetuksia varten voit käyttää joko konfigurointitiedostoa tai ympäristömuuttujia.
 
 Kun käytät [Docker Compose -pohjaista asetusta](deployment.md), voit sisällyttää konfigurointitiedoston lisäämällä seuraavan luettelokohdan `volumes:`-avaimen alle `grampsweb:`-lohkoon:
 
 ```yaml
       - /path/to/config.cfg:/app/config/config.cfg
 ```
-missä `/path/to/config.cfg` on polku konfigurointitiedostoon palvelimesi tiedostojärjestelmässä (oikealla puolella viitataan polkuun säilössä, eikä sitä saa muuttaa).
+missä `/path/to/config.cfg` on polku konfigurointitiedostoon palvelimesi tiedostojärjestelmässä (oikeanpuoleinen viittaa polkuun säiliössä eikä sitä saa muuttaa).
 
-Kun käytetään ympäristömuuttujia,
+Ympäristömuuttujia käytettäessä,
 
 - etuliite jokaiselle asetukselle on `GRAMPSWEB_` saadaksesi ympäristömuuttujan nimen
 - Käytä kaksoisalaviivoja sisäkkäisille sanakirja-asetuksille, esim. `GRAMPSWEB_THUMBNAIL_CACHE_CONFIG__CACHE_DEFAULT_TIMEOUT` asettaa arvon `THUMBNAIL_CACHE_CONFIG['CACHE_DEFAULT_TIMEOUT']` konfigurointivaihtoehdolle
@@ -30,9 +30,9 @@ Seuraavat konfigurointivaihtoehdot ovat olemassa.
 
 Avain | Kuvaus
 ----|-------------
-`TREE` | Käytettävän sukupuuyhteyden nimi. Näytä käytettävissä olevat puut komennolla `gramps -l`. Jos puuta tällä nimellä ei ole, uusi tyhjää puuta luodaan.
-`SECRET_KEY` | Salainen avain Flaskille. Salaisuutta ei saa jakaa julkisesti. Sen muuttaminen mitätöi kaikki pääsytunnukset.
-`USER_DB_URI` | Käyttäjädatabasen tietokannan URL. Mikä tahansa SQLAlchemy-yhteensopiva URL on sallittu.
+`TREE` | Käytettävän sukupuun tietokannan nimi. Näytä saatavilla olevat puut komennolla `gramps -l`. Jos puuta tällä nimellä ei ole, uusi tyhjää puuta luodaan.
+`SECRET_KEY` | Flaskin salainen avain. Salaisuutta ei saa jakaa julkisesti. Sen muuttaminen mitätöi kaikki pääsytunnukset.
+`USER_DB_URI` | Käyttäjä tietokannan URL-osoite. Mikä tahansa SQLAlchemy-yhteensopiva URL-osoite on sallittu.
 
 !!! info
     Voit luoda turvallisen salaisen avaimen esim. komennolla
@@ -45,22 +45,23 @@ Avain | Kuvaus
 
 Avain | Kuvaus
 ----|-------------
-`MEDIA_BASE_DIR` | Polku, jota käytetään media-tiedostojen perushakemistona, joka ohittaa Grampsissa asetetun media-perushakemiston. Kun käytetään [S3](s3.md), sen on oltava muotoa `s3://<bucket_name>`
-`SEARCH_INDEX_DB_URI` | Tietokannan URL hakemistolle. Vain `sqlite` tai `postgresql` ovat sallittuja taustajärjestelmiä. Oletusarvo on `sqlite:///indexdir/search_index.db`, luoden SQLite-tiedoston `indexdir`-kansioon suhteessa polkuun, josta skripti ajetaan
-`STATIC_PATH` | Polku staattisten tiedostojen tarjoamiseen (esim. staattinen verkkosivuston etupää)
-`BASE_URL` | Perus-URL, josta API on saavutettavissa (esim. `https://mygramps.mydomain.com/`). Tämä on tarpeen esim. oikeiden salasanan palautuslinkkien rakentamiseksi
+`MEDIA_BASE_DIR` | Polku, jota käytetään media-tiedostojen perusdirektorina, joka ohittaa Grampsissa asetetun media-perusdirektorin. Käytettäessä [S3](s3.md), sen on oltava muotoa `s3://<bucket_name>`
+ `TREE_ID` | Sukupuun tietokannan hakemiston nimi, jota käytetään yksittäisen puun tilassa (kun `TREE` ei ole asetettu `MULTI`). Kun se on asetettu, palvelin tunnistaa puun hakemiston nimen perusteella sen näyttönimen sijaan, mikä on kestävämpää nimimuutoksille. Pakollinen, jos haluat nimetä puun uudelleen API:n kautta. Hakemiston nimen voi löytää komennolla `GET /api/trees/-` (kenttä `id`).
+`SEARCH_INDEX_DB_URI` | Hakemiston URL-osoite. Vain `sqlite` tai `postgresql` ovat sallittuja taustajärjestelminä. Oletusarvo on `sqlite:///indexdir/search_index.db`, luoden SQLite-tiedoston `indexdir`-kansioon suhteessa polkuun, josta skripti ajetaan
+`STATIC_PATH` | Polku, josta staattisia tiedostoja tarjotaan (esim. staattinen verkkosivuston etupää)
+`BASE_URL` | Perus URL-osoite, josta API on saavutettavissa (esim. `https://mygramps.mydomain.com/`). Tämä on tarpeen esim. oikeiden salasanan palautuslinkkien rakentamiseksi
 `CORS_ORIGINS` | Alkuperät, joista CORS-pyynnöt ovat sallittuja. Oletusarvoisesti kaikki on estetty. Käytä `"*"` salliaksesi pyynnöt mistä tahansa verkkotunnuksesta.
-`EMAIL_HOST` | SMTP-palvelimen isäntä (esim. salasanan palautussähköpostien lähettämiseen)
-`EMAIL_PORT` | SMTP-palvelimen portti. oletusarvo on 465
-`EMAIL_HOST_USER` | SMTP-palvelimen käyttäjätunnus
+`EMAIL_HOST` | SMTP-palvelimen isäntä (esim. salasanan palautusviestien lähettämiseen)
+`EMAIL_PORT` | SMTP-palvelimen portti. oletusarvo 465
+`EMAIL_HOST_USER` | SMTP-palvelimen käyttäjänimi
 `EMAIL_HOST_PASSWORD` | SMTP-palvelimen salasana
-`EMAIL_USE_TLS` | **Vanha** (käytä sen sijaan `EMAIL_USE_SSL` tai `EMAIL_USE_STARTTLS`). Boolean, käytetäänkö TLS:ää sähköpostien lähettämiseen. Oletusarvo on `True`. Käytettäessä STARTTLS:ää, aseta tämä `False` ja käytä eri porttia kuin 25.
-`EMAIL_USE_SSL` | Boolean, käytetäänkö implisiittistä SSL/TLS:ää SMTP:ssä (v3.6.0+). Oletusarvo on `True`, jos `EMAIL_USE_TLS` ei ole nimenomaisesti asetettu. Käytetään tyypillisesti portin 465 kanssa.
-`EMAIL_USE_STARTTLS` | Boolean, käytetäänkö eksplisiittistä STARTTLS:ää SMTP:ssä (v3.6.0+). Oletusarvo on `False`. Käytetään tyypillisesti portin 587 tai 25 kanssa.
+`EMAIL_USE_TLS` | **Vanha** (käytä `EMAIL_USE_SSL` tai `EMAIL_USE_STARTTLS` sen sijaan). Boolean, käytetäänkö TLS:ää sähköpostien lähettämiseen. Oletusarvo `True`. Käytettäessä STARTTLS:ää, aseta tämä `False` ja käytä porttia, joka on eri kuin 25.
+`EMAIL_USE_SSL` | Boolean, käytetäänkö implisiittistä SSL/TLS:ää SMTP:lle (v3.6.0+). Oletusarvo on `True`, jos `EMAIL_USE_TLS` ei ole nimenomaisesti asetettu. Käytetään tyypillisesti portin 465 kanssa.
+`EMAIL_USE_STARTTLS` | Boolean, käytetäänkö eksplisiittistä STARTTLS:ää SMTP:lle (v3.6.0+). Oletusarvo on `False`. Käytetään tyypillisesti portin 587 tai 25 kanssa.
 `DEFAULT_FROM_EMAIL` | "From" osoite automatisoiduille sähköposteille
-`THUMBNAIL_CACHE_CONFIG` | Sanakirja, jossa on asetuksia pienoiskuvavälimuistille. Katso [Flask-Caching](https://flask-caching.readthedocs.io/en/latest/) mahdollisista asetuksista.
+`THUMBNAIL_CACHE_CONFIG` | Sanakirja, jossa on asetuksia pikkukuvien välimuistille. Katso [Flask-Caching](https://flask-caching.readthedocs.io/en/latest/) mahdollisista asetuksista.
 `REQUEST_CACHE_CONFIG` | Sanakirja, jossa on asetuksia pyyntövälimuistille. Katso [Flask-Caching](https://flask-caching.readthedocs.io/en/latest/) mahdollisista asetuksista.
-`PERSISTENT_CACHE_CONFIG` | Sanakirja, jossa on asetuksia pysyvälle välimuistille, jota käytetään esim. telemetriaan. Katso [Flask-Caching](https://flask-caching.readthedocs.io/en/latest/) mahdollisista asetuksista.
+`PERSISTENT_CACHE_CONFIG` | Sanakirja, jossa on asetuksia pysyvälle välimuistille, jota käytetään esim. telemetriassa. Katso [Flask-Caching](https://flask-caching.readthedocs.io/en/latest/) mahdollisista asetuksista.
 `CELERY_CONFIG` | Asetukset Celery-taustatehtäväjonolle. Katso [Celery](https://docs.celeryq.dev/en/stable/userguide/configuration.html) mahdollisista asetuksista.
 `REPORT_DIR` | Väliaikainen hakemisto, johon Gramps-raporttien suorittamisen tulokset tallennetaan
 `EXPORT_DIR` | Väliaikainen hakemisto, johon Gramps-tietokannan vientitulokset tallennetaan
@@ -70,7 +71,7 @@ Avain | Kuvaus
 
 
 !!! info
-    Käytettäessä ympäristömuuttujia konfiguroinnissa, boolean-vaihtoehtojen kuten `EMAIL_USE_TLS` on oltava joko merkkijono `true` tai `false` (kokoherkkiä!).
+    Kun käytetään ympäristömuuttujia konfiguroinnissa, boolean-asetusten kuten `EMAIL_USE_TLS` on oltava joko merkkijono `true` tai `false` (isot ja pienet kirjaimet huomioiden!).
 
 
 ### Asetukset vain PostgreSQL-taustatietokannalle
@@ -83,17 +84,17 @@ Avain | Kuvaus
 `POSTGRES_PASSWORD` | Salasana tietokannan käyttäjälle
 
 
-### Asetukset, jotka ovat tärkeitä useiden puiden isännöinnissä
+### Asetukset, jotka liittyvät useiden puiden isännöintiin
 
 Seuraavat asetukset ovat tärkeitä [useiden puiden isännöinnissä](multi-tree.md).
 
 
 Avain | Kuvaus
 ----|-------------
-`MEDIA_PREFIX_TREE` | Boolean, käytetäänkö erillistä alikansiota jokaisen puun media-tiedostoille. Oletusarvo on `False`, mutta vahvasti suositellaan käyttämään `True` usean puun asetuksessa
-`NEW_DB_BACKEND` | Tietokannan taustajärjestelmä, jota käytetään uusille sukupuuille. Sen on oltava yksi seuraavista: `sqlite`, `postgresql` tai `sharedpostgresql`. Oletusarvo on `sqlite`.
-`POSTGRES_HOST` | PostgreSQL-palvelimen isäntänimi, jota käytetään uusien puiden luomiseen, kun käytetään usean puun asetusta SharedPostgreSQL-taustajärjestelmällä
-`POSTGRES_PORT` | PostgreSQL-palvelimen portti, jota käytetään uusien puiden luomiseen, kun käytetään usean puun asetusta SharedPostgreSQL-taustajärjestelmällä
+`MEDIA_PREFIX_TREE` | Boolean, käytetäänkö erillistä alikansiota jokaisen puun media-tiedostoille. Oletusarvo `False`, mutta suositellaan vahvasti käytettäväksi `True` usean puun asetuksessa
+`NEW_DB_BACKEND` | Tietokannan tausta, jota käytetään uusille sukupuulle. Sen on oltava yksi `sqlite`, `postgresql` tai `sharedpostgresql`. Oletusarvo on `sqlite`.
+`POSTGRES_HOST` | PostgreSQL-palvelimen isäntänimi, jota käytetään uusien puiden luomiseen, kun käytetään usean puun asetusta SharedPostgreSQL-taustalla
+`POSTGRES_PORT` | PostgreSQL-palvelimen portti, jota käytetään uusien puiden luomiseen, kun käytetään usean puun asetusta SharedPostgreSQL-taustalla
 
 
 ### Asetukset OIDC-todennusta varten
@@ -102,16 +103,16 @@ Nämä asetukset ovat tarpeen, jos haluat käyttää OpenID Connect (OIDC) -tode
 
 Avain | Kuvaus
 ----|-------------
-`OIDC_ENABLED` | Boolean, otetaanko OIDC-todennus käyttöön. Oletusarvo on `False`.
-`OIDC_ISSUER` | OIDC-palveluntarjoajan myöntäjä-URL (muille OIDC-palveluntarjoajille)
+`OIDC_ENABLED` | Boolean, otetaanko OIDC-todennus käyttöön. Oletusarvo `False`.
+`OIDC_ISSUER` | OIDC-palveluntarjoajan myöntäjän URL-osoite (muille OIDC-palveluntarjoajille)
 `OIDC_CLIENT_ID` | OAuth-asiakastunnus (muille OIDC-palveluntarjoajille)
 `OIDC_CLIENT_SECRET` | OAuth-asiakassalaisuus (muille OIDC-palveluntarjoajille)
-`OIDC_NAME` | Mukautettu näyttönimi palveluntarjoajalle. Oletusarvo on "OIDC"
-`OIDC_SCOPES` | OAuth-alueet. Oletusarvo on "openid email profile"
-`OIDC_USERNAME_CLAIM` | Vaatimus, jota käytetään käyttäjänimenä. Oletusarvo on "preferred_username"
-`OIDC_OPENID_CONFIG_URL` | Valinnainen: URL OpenID Connect -konfigurointipäätteelle (jos ei käytetä standardia `/.well-known/openid-configuration`)
-`OIDC_DISABLE_LOCAL_AUTH` | Boolean, estetäänkö paikallinen käyttäjänimi/salasana-todennus. Oletusarvo on `False`
-`OIDC_AUTO_REDIRECT` | Boolean, ohjataanko automaattisesti OIDC:hen, kun vain yksi palveluntarjoaja on määritetty. Oletusarvo on `False`
+`OIDC_NAME` | Mukautettu näyttönimi palveluntarjoajalle. Oletusarvo "OIDC"
+`OIDC_SCOPES` | OAuth-alueet. Oletusarvo "openid email profile"
+`OIDC_USERNAME_CLAIM` | Vaatimus, jota käytetään käyttäjänimenä. Oletusarvo "preferred_username"
+`OIDC_OPENID_CONFIG_URL` | Valinnainen: URL-osoite OpenID Connect -konfiguraatiopisteeseen (jos ei käytetä standardia `/.well-known/openid-configuration`)
+`OIDC_DISABLE_LOCAL_AUTH` | Boolean, estetäänkö paikallinen käyttäjänimi/salasana-todennus. Oletusarvo `False`
+`OIDC_AUTO_REDIRECT` | Boolean, ohjataanko automaattisesti OIDC:hen, kun vain yksi palveluntarjoaja on määritetty. Oletusarvo `False`
 
 #### Sisäänrakennetut OIDC-palveluntarjoajat
 
@@ -132,7 +133,7 @@ Nämä asetukset mahdollistavat OIDC-ryhmien/roolien kartoituksen identiteettipa
 
 Avain | Kuvaus
 ----|-------------
-`OIDC_ROLE_CLAIM` | Vaatimuksen nimi OIDC-todistuksessa, joka sisältää käyttäjän ryhmät/roolit. Oletusarvo on "groups"
+`OIDC_ROLE_CLAIM` | Vaatimuksen nimi OIDC-tunnuksessa, joka sisältää käyttäjän ryhmät/roolit. Oletusarvo "groups"
 `OIDC_GROUP_ADMIN` | Ryhmän/roolin nimi OIDC-palveluntarjoajastasi, joka vastaa Grampsin "Admin" -roolia
 `OIDC_GROUP_OWNER` | Ryhmän/roolin nimi OIDC-palveluntarjoajastasi, joka vastaa Grampsin "Owner" -roolia
 `OIDC_GROUP_EDITOR` | Ryhmän/roolin nimi OIDC-palveluntarjoajastasi, joka vastaa Grampsin "Editor" -roolia
@@ -146,11 +147,11 @@ Nämä asetukset ovat tarpeen, jos haluat käyttää AI-pohjaisia ominaisuuksia,
 
 Avain | Kuvaus
 ----|-------------
-`LLM_BASE_URL` | Perus-URL OpenAI-yhteensopivalle keskustelu-API:lle. Oletusarvo on `None`, mikä käyttää OpenAI API:ta.
-`LLM_MODEL` | Malli, jota käytetään OpenAI-yhteensopivassa keskustelu-API:ssa. Jos ei asetettu (oletusarvo), keskustelu on pois käytöstä. Versiosta v3.6.0 alkaen AI-avustaja käyttää Pydantic AI:ta työkalujen kutsumismahdollisuuksilla.
-`VECTOR_EMBEDDING_MODEL` | [Sentence Transformers](https://sbert.net/) malli, jota käytetään semanttisen haun vektoriupotuksiin. Jos ei asetettu (oletusarvo), semanttinen haku ja keskustelu ovat pois käytöstä.
-`LLM_MAX_CONTEXT_LENGTH` | Merkkiraja sukupuun kontekstille, joka annetaan LLM:lle. Oletusarvo on 50000.
-`LLM_SYSTEM_PROMPT` | Mukautettu järjestelmäkehotus LLM-keskusteluavustajalle (v3.6.0+). Jos ei asetettu, käytetään oletusarvoista sukututkimusoptimoitua kehotusta.
+`LLM_BASE_URL` | Perus URL-osoite OpenAI-yhteensopivalle keskustelu-API:lle. Oletusarvo `None`, joka käyttää OpenAI API:ta.
+`LLM_MODEL` | Malli, jota käytetään OpenAI-yhteensopivassa keskustelu-API:ssa. Jos ei asetettu (oletusarvo), keskustelu on pois käytöstä. Versiosta v3.6.0 alkaen AI-assistentti käyttää Pydantic AI:ta työkalukutsumahdollisuuksilla.
+`VECTOR_EMBEDDING_MODEL` | [Sentence Transformers](https://sbert.net/) -malli, jota käytetään semanttisen haun vektoriupotuksiin. Jos ei asetettu (oletusarvo), semanttinen haku ja keskustelu ovat pois käytöstä.
+`LLM_MAX_CONTEXT_LENGTH` | Merkkiraja sukupuun kontekstille, joka annetaan LLM:lle. Oletusarvo 50000.
+`LLM_SYSTEM_PROMPT` | Mukautettu järjestelmäkehotus LLM-keskusteluassistentille (v3.6.0+). Jos ei asetettu, käytetään oletusarvoista sukututkimukseen optimoitua kehotusta.
 
 
 ## Esimerkkikonfigurointitiedosto
@@ -163,7 +164,7 @@ SECRET_KEY="..."  # salainen avain
 USER_DB_URI="sqlite:////path/to/users.sqlite"
 EMAIL_HOST="mail.example.com"
 EMAIL_PORT=465
-EMAIL_USE_SSL=True  # Käytä implisiittistä SSL:ää portille 465
+EMAIL_USE_SSL=True  # Käytä implisiittistä SSL:ää portissa 465
 EMAIL_HOST_USER="gramps@example.com"
-EMAIL_HOST_PASSWORD="..." # SMTP-salasanasi
+EMAIL_HOST_PASSWORD="..." # SMTP-salasana
 DEFAULT_FROM_EMAIL="gramps@example.com"
